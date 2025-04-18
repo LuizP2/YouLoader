@@ -23,7 +23,11 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             YouLoaderTheme {
-                Scaffold( modifier = Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.systemBars) ) { innerPadding ->
+                Scaffold(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .windowInsetsPadding(WindowInsets.systemBars)
+                ) { innerPadding ->
                     App(modifier = Modifier.padding(innerPadding))
                 }
             }
@@ -37,8 +41,8 @@ fun App(modifier: Modifier = Modifier) {
         modifier = modifier
             .fillMaxSize(),
         contentAlignment = androidx.compose.ui.Alignment.Center
-    ){
-    DownloadForm()
+    ) {
+        DownloadForm()
     }
 }
 

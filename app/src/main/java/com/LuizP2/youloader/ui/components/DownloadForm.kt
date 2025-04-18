@@ -31,7 +31,7 @@ fun DownloadForm(
     val context = LocalContext.current
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
+    ) { isGranted: Boolean ->
         if (isGranted) {
             Toast.makeText(context, "Tudo ok", Toast.LENGTH_SHORT).show()
             // Proceed with the download logic
@@ -43,28 +43,29 @@ fun DownloadForm(
 
     Box(modifier) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        TextField(
-            value = text,
-            onValueChange = {text = it},
-            label = { Text("URL") },
-            placeholder = { Text("Enter the URL") },
-            maxLines = 1,
-            singleLine = true,
-            supportingText = { Text(text = "Enter the URL of the video you want to download") },
-        )
-        ElevatedButton(
-            modifier = Modifier.padding(top = 16.dp),
-            onClick = {
-                permissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                if(text.isNotEmpty() && text.isNotBlank()) {
-                    enableMusicInfo = true
-                } else {
-                    Toast.makeText(context, "Please enter a valid URL", Toast.LENGTH_SHORT).show()
-                }
-            },
-            enabled = text.isNotEmpty() && text.isNotBlank()
-            ) {Text("submit") }
-            if(enableMusicInfo) {
+            TextField(
+                value = text,
+                onValueChange = { text = it },
+                label = { Text("URL") },
+                placeholder = { Text("Enter the URL") },
+                maxLines = 1,
+                singleLine = true,
+                supportingText = { Text(text = "Enter the URL of the video you want to download") },
+            )
+            ElevatedButton(
+                modifier = Modifier.padding(top = 16.dp),
+                onClick = {
+                    permissionLauncher.launch(Manifest.permission.INTERNET)
+                    if (text.isNotEmpty() && text.isNotBlank()) {
+                        enableMusicInfo = true
+                    } else {
+                        Toast.makeText(context, "Please enter a valid URL", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                },
+                enabled = text.isNotEmpty() && text.isNotBlank()
+            ) { Text("submit") }
+            if (enableMusicInfo) {
                 MusicInfo()
             }
         }
