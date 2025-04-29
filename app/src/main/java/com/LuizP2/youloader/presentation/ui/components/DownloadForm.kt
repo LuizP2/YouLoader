@@ -1,4 +1,4 @@
-package com.LuizP2.youloader.ui.components
+package com.LuizP2.youloader.presentation.ui.components
 
 import android.Manifest
 import android.widget.Toast

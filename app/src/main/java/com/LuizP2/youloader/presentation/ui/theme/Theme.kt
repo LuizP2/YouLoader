@@ -1,4 +1,4 @@
-package com.LuizP2.youloader.ui.theme
+package com.LuizP2.youloader.presentation.ui.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme

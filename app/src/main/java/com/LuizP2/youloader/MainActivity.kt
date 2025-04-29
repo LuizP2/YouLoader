@@ -14,8 +14,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.LuizP2.youloader.ui.components.DownloadForm
-import com.LuizP2.youloader.ui.theme.YouLoaderTheme
+import com.LuizP2.youloader.presentation.ui.components.DownloadForm
+import com.LuizP2.youloader.presentation.ui.theme.YouLoaderTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
