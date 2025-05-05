@@ -1,12 +1,14 @@
-package com.LuizP2.youloader.presentation.ui.components
+package com.LuizP2.youloader.presentation.ui.screens
 
 import android.Manifest
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -20,11 +22,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.LuizP2.youloader.data.model.VideoItem
+import com.LuizP2.youloader.presentation.ui.components.MusicInfo
+import com.LuizP2.youloader.presentation.ui.components.SearchViewByIdViewModel
+import com.LuizP2.youloader.resource.Resource
 
 @Composable
-fun DownloadForm(
-    modifier: Modifier = Modifier
+fun DownloadVideoScreen(
+    modifier: Modifier = Modifier,
+    viewModel: SearchViewByIdViewModel = hiltViewModel()
 ) {
 
     var text by remember { mutableStateOf("") }
@@ -40,6 +47,7 @@ fun DownloadForm(
         }
     }
     var enableMusicInfo by remember { mutableStateOf(false) }
+    val video = viewModel.video
 
     Box(modifier) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -56,8 +64,11 @@ fun DownloadForm(
                 modifier = Modifier.padding(top = 16.dp),
                 onClick = {
                     permissionLauncher.launch(Manifest.permission.INTERNET)
-                    if (text.isNotEmpty() && text.isNotBlank()) {
+                    val videoId = text.substringAfter("v=", "").substringBefore("&")
+                    if (videoId.isNotEmpty()) {
+                        viewModel.searchById(videoId)
                         enableMusicInfo = true
+
                     } else {
                         Toast.makeText(context, "Please enter a valid URL", Toast.LENGTH_SHORT)
                             .show()
@@ -66,7 +77,22 @@ fun DownloadForm(
                 enabled = text.isNotEmpty() && text.isNotBlank()
             ) { Text("submit") }
             if (enableMusicInfo) {
-                MusicInfo()
+                when (video) {
+                    is Resource.Loading -> {
+                        // Show loading indicator
+                        CircularProgressIndicator()
+                    }
+
+                    is Resource.Success -> {
+                        // Show the music info
+                        MusicInfo(item = (video as Resource.Success<VideoItem>).data)
+                    }
+
+                    is Resource.Error -> {
+                        // Handle error
+                        Text(text = "Error: ${(video as Resource.Error).exception.message}")
+                    }
+                }
             }
         }
     }
@@ -75,5 +101,5 @@ fun DownloadForm(
 @Preview(name = "DownloadForm", showBackground = true)
 @Composable
 private fun PreviewDownloadForm() {
-    DownloadForm()
+    DownloadVideoScreen()
 }

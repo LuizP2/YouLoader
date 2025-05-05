@@ -14,9 +14,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.LuizP2.youloader.presentation.ui.components.DownloadForm
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.LuizP2.youloader.presentation.ui.components.SearchViewByIdViewModel
+import com.LuizP2.youloader.presentation.ui.screens.DownloadVideoScreen
 import com.LuizP2.youloader.presentation.ui.theme.YouLoaderTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,12 +41,14 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun App(modifier: Modifier = Modifier) {
+    val viewModel: SearchViewByIdViewModel = hiltViewModel() ?: return
+
     Box(
         modifier = modifier
             .fillMaxSize(),
         contentAlignment = androidx.compose.ui.Alignment.Center
     ) {
-        DownloadForm()
+        DownloadVideoScreen(viewModel = viewModel)
     }
 }
 
