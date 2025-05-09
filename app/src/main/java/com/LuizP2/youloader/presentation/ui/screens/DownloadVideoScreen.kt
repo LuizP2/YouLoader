@@ -1,7 +1,6 @@
 package com.LuizP2.youloader.presentation.ui.screens
 
 import android.Manifest
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -23,9 +22,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.LuizP2.youloader.data.model.VideoItem
 import com.LuizP2.youloader.presentation.ui.components.MusicInfo
-import com.LuizP2.youloader.presentation.ui.components.SearchViewByIdViewModel
+import com.LuizP2.youloader.presentation.viewmodel.DownloadViewModel
+import com.LuizP2.youloader.presentation.viewmodel.SearchViewByIdViewModel
 import com.LuizP2.youloader.resource.Resource
 
 @Composable
@@ -85,7 +86,7 @@ fun DownloadVideoScreen(
 
                     is Resource.Success -> {
                         // Show the music info
-                        MusicInfo(item = (video as Resource.Success<VideoItem>).data)
+                        MusicInfo(item = (video as Resource.Success<VideoItem>).data, viewmodel = viewModel<DownloadViewModel>())
                     }
 
                     is Resource.Error -> {

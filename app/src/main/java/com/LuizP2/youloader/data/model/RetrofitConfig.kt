@@ -1,12 +1,15 @@
 package com.LuizP2.youloader.data.model
 
+import com.LuizP2.youloader.data.api.service.DownloadMusicService
 import com.LuizP2.youloader.data.api.service.YoutubeDatabaseService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -24,4 +27,38 @@ object NetworkModule {
     @Singleton
     fun provideYouTubeService(retrofit: Retrofit): YoutubeDatabaseService =
         retrofit.create(YoutubeDatabaseService::class.java)
+
+
+    @Provides
+    @Singleton
+    @Named("DownloadMusicRetrofit")
+    fun DownloadProvideRetrofit(): Retrofit {
+
+        val client = OkHttpClient.Builder()
+            .addInterceptor {
+                val request = it.request().newBuilder()
+                    .addHeader(
+                        "x-rapidapi-key",
+                        "ffcd1b1498msh873e601b8594bfbp16bc06jsn70dcba42ab0a"
+                    )
+                    .addHeader("x-rapidapi-host", "youtube-mp36.p.rapidapi.com")
+                    .addHeader("Content-Type", "application/json")
+                    .build()
+                it.proceed(request)
+            }
+            .build()
+
+
+        return Retrofit.Builder()
+            .baseUrl("https://youtube-mp36.p.rapidapi.com/")
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+
+    @Provides
+    @Singleton
+    fun provideDownloadService(@Named("DownloadMusicRetrofit")retrofit: Retrofit): DownloadMusicService =
+        retrofit.create(DownloadMusicService::class.java)
 }

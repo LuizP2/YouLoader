@@ -8,14 +8,14 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import jakarta.inject.Inject
 
-interface YouTubeRepository {
+interface YouTubeDatabaseRepository {
     suspend fun search(query: String): Result<List<VideoItem>>
     suspend fun searchByID(videoId: String): Result<VideoItem>
 }
 
 class YouTubeRepositoryImpl @Inject constructor(
     private val api: YoutubeDatabaseService
-) : YouTubeRepository {
+) : YouTubeDatabaseRepository {
     override suspend fun search(query: String): Result<List<VideoItem>> {
         return try {
             val response = api.searchVideos(query = query)
@@ -39,9 +39,9 @@ class YouTubeRepositoryImpl @Inject constructor(
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class RepositoryModule {
+abstract class YoutubeDatabaseRepositoryModule {
     @Binds
     abstract fun bindYouTubeRepository(
         impl: YouTubeRepositoryImpl
-    ): YouTubeRepository
+    ): YouTubeDatabaseRepository
 }

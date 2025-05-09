@@ -1,4 +1,4 @@
-package com.LuizP2.youloader.presentation.ui.components
+package com.LuizP2.youloader.presentation.viewmodel
 
 
 import androidx.compose.runtime.getValue

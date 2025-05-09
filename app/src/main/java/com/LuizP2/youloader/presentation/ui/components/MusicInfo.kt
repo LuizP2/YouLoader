@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -24,16 +25,19 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import com.LuizP2.youloader.R
 import com.LuizP2.youloader.data.model.Thumbnail
 import com.LuizP2.youloader.data.model.VideoImageType
 import com.LuizP2.youloader.data.model.VideoItem
 import com.LuizP2.youloader.data.model.VideoSnippet
+import com.LuizP2.youloader.data.model.videoId
+import com.LuizP2.youloader.presentation.viewmodel.DownloadViewModel
 
 
 val videoBase = VideoItem(
-    id = "ekzHIouo8Q4",
+    id = videoId("ekzHIouo8Q4"),
     snippet = VideoSnippet(
         title = "Bruno Mars - When I Was Your Man (Official Music Video)",
         description = "1.469.099.275 visualizações  5 de fev. de 2013  #UnorthodoxJukebox #BrunoMars #WhenIWasYourMan\n" +
@@ -70,8 +74,11 @@ val videoBase = VideoItem(
 @Composable
 fun MusicInfo(
     modifier: Modifier = Modifier,
-    item: VideoItem? = null
+    item: VideoItem? = null,
+    viewmodel: DownloadViewModel
 ) {
+
+    var musicDownloaded = viewmodel.music
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -105,7 +112,11 @@ fun MusicInfo(
             IconButton(
                 modifier = Modifier
                     .size(48.dp),
-                onClick = { /* TODO */ }
+                onClick = {
+                    if (item != null) {
+                        viewmodel.Download(id = item.id.videoId, title = item.snippet.title)
+                    }
+                }
             ) {
                 Image(
                     painter = painterResource(R.drawable.download_icon),
@@ -114,11 +125,18 @@ fun MusicInfo(
             }
         }
     }
+
+    Spacer(modifier = Modifier.height(8.dp))
+    Text(
+        text = "the music: ${musicDownloaded}",
+        style = MaterialTheme.typography.bodySmall,
+        modifier = Modifier.padding(start = 8.dp)
+    )
 }
 
 
 @Preview(name = "MusicInfo", showBackground = true)
 @Composable
 private fun PreviewMusicInfo() {
-    MusicInfo(item = videoBase)
+    MusicInfo(item = videoBase, viewmodel = viewModel<DownloadViewModel>())
 }
