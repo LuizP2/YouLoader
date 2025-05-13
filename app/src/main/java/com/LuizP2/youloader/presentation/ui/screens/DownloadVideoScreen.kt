@@ -86,13 +86,18 @@ fun DownloadVideoScreen(
 
                     is Resource.Success -> {
                         // Show the music info
-                        MusicInfo(item = (video as Resource.Success<VideoItem>).data, viewmodel = viewModel<DownloadViewModel>())
+                        MusicInfo(
+                            item = (video as Resource.Success<VideoItem>).data,
+                            viewmodel = viewModel<DownloadViewModel>()
+                        )
                     }
 
                     is Resource.Error -> {
                         // Handle error
                         Text(text = "Error: ${(video as Resource.Error).exception.message}")
                     }
+
+                    else -> {}
                 }
             }
         }

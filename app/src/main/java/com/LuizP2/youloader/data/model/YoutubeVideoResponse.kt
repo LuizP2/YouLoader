@@ -11,7 +11,8 @@ data class VideoItem(
     @SerializedName("id") val id: videoId,
     @SerializedName("snippet") val snippet: VideoSnippet
 )
-data class videoId (
+
+data class videoId(
     @SerializedName("videoId") val videoId: String
 )
 

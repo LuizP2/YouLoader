@@ -59,6 +59,6 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideDownloadService(@Named("DownloadMusicRetrofit")retrofit: Retrofit): DownloadMusicService =
+    fun provideDownloadService(@Named("DownloadMusicRetrofit") retrofit: Retrofit): DownloadMusicService =
         retrofit.create(DownloadMusicService::class.java)
 }

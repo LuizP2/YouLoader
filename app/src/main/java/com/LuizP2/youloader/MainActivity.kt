@@ -15,10 +15,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.LuizP2.youloader.presentation.viewmodel.SearchViewByIdViewModel
 import com.LuizP2.youloader.presentation.ui.screens.DownloadVideoScreen
-import com.LuizP2.youloader.presentation.ui.screens.SearchScreen
 import com.LuizP2.youloader.presentation.ui.theme.YouLoaderTheme
+import com.LuizP2.youloader.presentation.viewmodel.SearchViewByIdViewModel
 import com.LuizP2.youloader.presentation.viewmodel.SearchViewModel
 import dagger.hilt.android.AndroidEntryPoint
 

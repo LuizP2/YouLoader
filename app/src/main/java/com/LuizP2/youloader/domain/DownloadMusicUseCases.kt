@@ -1,6 +1,5 @@
 package com.LuizP2.youloader.domain
 
-import androidx.lifecycle.LiveData
 import com.LuizP2.youloader.data.api.repository.DownloadMp3Repository
 import com.LuizP2.youloader.data.model.Music
 import javax.inject.Inject
@@ -16,6 +15,6 @@ class DownloadMusicUseCase @Inject constructor(
     private val repository: DownloadMp3Repository
 ) {
     suspend operator fun invoke(url: String): Result<Music> {
-        return repository.DownloadMp3(url)
+        return repository.DownloadMp3Call(url)
     }
 }

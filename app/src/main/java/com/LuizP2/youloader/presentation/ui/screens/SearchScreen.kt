@@ -59,6 +59,7 @@ fun SearchScreen(viewModel: SearchViewModel) {
             }
 
             is Resource.Error -> Text("Erro: ${videosState.exception.message}")
+            else -> {}
         }
     }
 }
