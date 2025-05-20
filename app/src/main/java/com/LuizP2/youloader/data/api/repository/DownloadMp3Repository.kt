@@ -9,7 +9,7 @@ import dagger.hilt.components.SingletonComponent
 import jakarta.inject.Inject
 import javax.inject.Named
 
-interface DownloadMp3Repository {
+fun interface DownloadMp3Repository {
     @Named("DownloadMusic")
     suspend fun DownloadMp3Call(videoId: String): Result<Music>
 }

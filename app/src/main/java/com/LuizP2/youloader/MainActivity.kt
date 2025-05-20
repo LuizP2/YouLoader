@@ -14,11 +14,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.LuizP2.youloader.presentation.ui.screens.DownloadVideoScreen
+import com.LuizP2.youloader.presentation.navigation.AppNavHost
 import com.LuizP2.youloader.presentation.ui.theme.YouLoaderTheme
-import com.LuizP2.youloader.presentation.viewmodel.SearchViewByIdViewModel
-import com.LuizP2.youloader.presentation.viewmodel.SearchViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -42,15 +39,12 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun App(modifier: Modifier = Modifier) {
-    val idviewModel: SearchViewByIdViewModel = hiltViewModel()
-    val viewModel: SearchViewModel = hiltViewModel()
-
     Box(
         modifier = modifier
             .fillMaxSize(),
         contentAlignment = androidx.compose.ui.Alignment.Center
     ) {
-        DownloadVideoScreen(viewModel = idviewModel)
+        AppNavHost()
     }
 }
 

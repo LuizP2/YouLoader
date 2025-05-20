@@ -30,21 +30,17 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import com.LuizP2.youloader.R
-import com.LuizP2.youloader.data.model.Music
-import com.LuizP2.youloader.data.model.Thumbnail
-import com.LuizP2.youloader.data.model.VideoImageType
 import com.LuizP2.youloader.data.model.VideoItem
-import com.LuizP2.youloader.data.model.VideoSnippet
-import com.LuizP2.youloader.data.model.videoId
 import com.LuizP2.youloader.presentation.viewmodel.DownloadViewModel
-import com.LuizP2.youloader.presentation.viewmodel.downloadMp3
 import com.LuizP2.youloader.resource.Resource
+import com.LuizP2.youloader.util.DownloadMp3Utils.downloadMp3
 
 @Composable
 fun MusicInfo(
     modifier: Modifier = Modifier,
     item: VideoItem? = null,
-    viewmodel: DownloadViewModel
+    viewmodel: DownloadViewModel,
+    onDownloadClick: (id: String) -> Unit
 ) {
 
     val musicState = viewmodel.music
@@ -52,7 +48,7 @@ fun MusicInfo(
 
     LaunchedEffect(musicState) {
         if (musicState is Resource.Success) {
-            val music = (musicState as Resource.Success<Music>).data
+            val music = (musicState).data
             val url = music.url
             val title = music.title
 
@@ -61,9 +57,7 @@ fun MusicInfo(
                 fileUrl = url,
                 fileName = "$title.mp3"
             )
-
-
-            viewmodel.FinishDownloadProcess()
+            viewmodel.finishDownloadProcess()
         }
     }
     Box(
@@ -113,7 +107,7 @@ fun MusicInfo(
                     .size(48.dp),
                 onClick = {
                     if (item != null) {
-                        viewmodel.Download(id = item.id.videoId, title = item.snippet.title)
+                        onDownloadClick(item.id.videoId)
                     }
                 }
             ) {
@@ -129,14 +123,8 @@ fun MusicInfo(
     when (musicState) {
         is Resource.DownloadFinished -> Text("Download concluído! Verifique sua pasta de downloads.")
         is Resource.Loading -> Text("Processando...")
-        is Resource.Error -> Text("Erro: ${(musicState as Resource.Error).exception.message}")
+        is Resource.Error -> Text("Erro: ${(musicState).exception.message}")
         is Resource.Success -> Text("Iniciando download…")
+        else -> {}
     }
-}
-
-
-@Preview(name = "MusicInfo", showBackground = true)
-@Composable
-private fun PreviewMusicInfo() {
-    MusicInfo(item = null, viewmodel = viewModel<DownloadViewModel>())
 }

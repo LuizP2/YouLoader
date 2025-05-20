@@ -6,9 +6,15 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -22,17 +28,17 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.LuizP2.youloader.data.model.VideoItem
 import com.LuizP2.youloader.presentation.ui.components.MusicInfo
 import com.LuizP2.youloader.presentation.viewmodel.DownloadViewModel
 import com.LuizP2.youloader.presentation.viewmodel.SearchViewByIdViewModel
 import com.LuizP2.youloader.resource.Resource
+import com.LuizP2.youloader.util.DownloadMp3Utils.getVideoIdFromURL
 
 @Composable
 fun DownloadVideoScreen(
     modifier: Modifier = Modifier,
-    viewModel: SearchViewByIdViewModel = hiltViewModel()
+    viewModel: SearchViewByIdViewModel = hiltViewModel(),
+    onNavigateToSearchScreen: () -> Unit
 ) {
 
     var text by remember { mutableStateOf("") }
@@ -42,64 +48,85 @@ fun DownloadVideoScreen(
     ) { isGranted: Boolean ->
         if (isGranted) {
             Toast.makeText(context, "Tudo ok", Toast.LENGTH_SHORT).show()
-            // Proceed with the download logic
         } else {
             Toast.makeText(context, "aceita a internet ai", Toast.LENGTH_SHORT).show()
         }
     }
     var enableMusicInfo by remember { mutableStateOf(false) }
     val video = viewModel.video
-
-    Box(modifier) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            TextField(
-                value = text,
-                onValueChange = { text = it },
-                label = { Text("URL") },
-                placeholder = { Text("Enter the URL") },
-                maxLines = 1,
-                singleLine = true,
-                supportingText = { Text(text = "Enter the URL of the video you want to download") },
-            )
-            ElevatedButton(
-                modifier = Modifier.padding(top = 16.dp),
-                onClick = {
-                    permissionLauncher.launch(Manifest.permission.INTERNET)
-                    val videoId = text.substringAfter("v=", "").substringBefore("&")
-                    if (videoId.isNotEmpty()) {
-                        viewModel.searchById(videoId)
-                        enableMusicInfo = true
-
-                    } else {
-                        Toast.makeText(context, "Please enter a valid URL", Toast.LENGTH_SHORT)
-                            .show()
-                    }
-                },
-                enabled = text.isNotEmpty() && text.isNotBlank()
-            ) { Text("submit") }
-            if (enableMusicInfo) {
-                when (video) {
-                    is Resource.Loading -> {
-                        // Show loading indicator
-                        CircularProgressIndicator()
-                    }
-
-                    is Resource.Success -> {
-                        // Show the music info
-                        MusicInfo(
-                            item = (video as Resource.Success<VideoItem>).data,
-                            viewmodel = viewModel<DownloadViewModel>()
+    Scaffold(
+        floatingActionButton = {
+            FloatingActionButton(onClick = onNavigateToSearchScreen) {
+                Icon(Icons.Default.Search, contentDescription = "pesquisar videos")
+            }
+        }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            Box(modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    TextField(
+                        value = text,
+                        onValueChange = { text = it },
+                        label = { Text("URL") },
+                        placeholder = { Text("Enter the youtube video URL here") },
+                        maxLines = 1,
+                        singleLine = true,
+                        supportingText = { Text(text = "Enter the URL of the video you want to download") },
                         )
-                    }
+                    ElevatedButton(
+                        modifier = Modifier.padding(top = 16.dp),
+                        onClick = {
+                            permissionLauncher.launch(Manifest.permission.INTERNET)
+                            val videoId = text
+                            if (videoId.isNotEmpty()) {
+                                viewModel.searchById(getVideoIdFromURL(videoId))
+                                enableMusicInfo = true
 
-                    is Resource.Error -> {
-                        // Handle error
-                        Text(text = "Error: ${(video as Resource.Error).exception.message}")
-                    }
+                            } else {
+                                Toast.makeText(
+                                    context,
+                                    "Please enter a valid URL",
+                                    Toast.LENGTH_SHORT
+                                )
+                                    .show()
+                            }
+                        },
+                        enabled = text.isNotEmpty() && text.isNotBlank()
+                    ) { Text("submit") }
+                    if (enableMusicInfo) {
+                        when (video) {
+                            is Resource.Loading -> {
+                                // Show loading indicator
+                                CircularProgressIndicator()
+                            }
 
-                    else -> {}
+                            is Resource.Success -> {
+                                val downloadModel: DownloadViewModel = hiltViewModel<DownloadViewModel>()
+                                MusicInfo(
+                                    item = (video).data,
+                                    viewmodel = hiltViewModel<DownloadViewModel>(),
+                                    onDownloadClick = { id ->
+                                        downloadModel.download(id)
+                                    },
+                                )
+                            }
+
+                            is Resource.Error -> {
+                                // Handle error
+                                Text(text = "Error: ${(video).exception.message}")
+                            }
+
+                            else -> {/*Shows nothing*/
+                            }
+                        }
+                    }
                 }
             }
+
         }
     }
 }
@@ -107,5 +134,5 @@ fun DownloadVideoScreen(
 @Preview(name = "DownloadForm", showBackground = true)
 @Composable
 private fun PreviewDownloadForm() {
-    DownloadVideoScreen()
+    DownloadVideoScreen(onNavigateToSearchScreen = {})
 }

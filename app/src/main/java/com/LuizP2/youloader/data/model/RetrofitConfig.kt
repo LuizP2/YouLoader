@@ -1,5 +1,6 @@
 package com.LuizP2.youloader.data.model
 
+import com.LuizP2.youloader.BuildConfig
 import com.LuizP2.youloader.data.api.service.DownloadMusicService
 import com.LuizP2.youloader.data.api.service.YoutubeDatabaseService
 import dagger.Module
@@ -39,7 +40,7 @@ object NetworkModule {
                 val request = it.request().newBuilder()
                     .addHeader(
                         "x-rapidapi-key",
-                        "ffcd1b1498msh873e601b8594bfbp16bc06jsn70dcba42ab0a"
+                        BuildConfig.MP3_API_KEY
                     )
                     .addHeader("x-rapidapi-host", "youtube-mp36.p.rapidapi.com")
                     .addHeader("Content-Type", "application/json")

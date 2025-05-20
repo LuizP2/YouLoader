@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -5,17 +7,29 @@ plugins {
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
 }
+val localProps = Properties().apply {
+    load(rootProject.file("local.properties").inputStream())
+}
 
+// Busca as chaves
+val youtubeApiKey: String = localProps.getProperty("YOUTUBE_DATABASE_KEY")
+    ?: throw IllegalStateException("YOUTUBE_DATABASE_KEY não encontrada.")
+val mp3key: String = localProps.getProperty("MP3_API_KEY")
+    ?: throw IllegalStateException("MP3_API_KEY não encontrada.")
 android {
     namespace = "com.LuizP2.youloader"
     compileSdk = 35
 
     defaultConfig {
+
         applicationId = "com.LuizP2.youloader"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
+
+        buildConfigField("String", "YOUTUBE_API_KEY", "\"$youtubeApiKey\"")
+        buildConfigField("String", "MP3_API_KEY", "\"$mp3key\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -38,6 +52,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
